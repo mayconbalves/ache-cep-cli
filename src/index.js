@@ -1,41 +1,35 @@
 #!/usr/bin/env node
-import axios from "axios";
-import chalk from "chalk";
+import chalk from 'chalk';
+import { fetchCepData, formatCepData } from './cep.js';
 
 const input = process.argv[2];
 
 if (!input) {
-  console.log(chalk.yellow("Uso: npx meu-cep <cep>"));
+  console.log(chalk.yellow('Uso: npx rastreio-cli <cep>'));
+  console.log(chalk.cyan('Exemplo: npx rastreio-cli 01310-100'));
   process.exit(1);
 }
 
-async function searchItem(code) {
-  const cep = code.replace(/\D/g, "");
-
-  if (cep.length !== 8) {
-    console.log(chalk.red("CEP inválido. Use 8 dígitos."));
-    process.exit(1);
-  }
-
+/**
+ * Main CLI function to search and display CEP information
+ * @param {string} code - The CEP code to search
+ */
+async function main(code) {
   try {
-    const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`, {
-      headers: { Accept: "application/json" },
-    });
+    const data = await fetchCepData(code);
+    const formatted = formatCepData(data);
 
-    if (data.erro) {
-      console.log(chalk.red("CEP não encontrado."));
-      process.exit(1);
-    }
-
-    console.log(chalk.green(`📍 CEP: ${data.cep}`));
-    console.log(`Endereço: ${data.logradouro}`);
-    console.log(`Bairro: ${data.bairro}`);
-    console.log(`Cidade: ${data.localidade}`);
-    console.log(`Estado: ${data.uf}`);
-  } catch {
-    console.error(chalk.red("Erro ao consultar o CEP"));
+    console.log(chalk.green(`📍 CEP: ${formatted.cep}`));
+    console.log(`Endereço: ${formatted.logradouro}`);
+    console.log(`Bairro: ${formatted.bairro}`);
+    console.log(`Cidade: ${formatted.localidade}`);
+    console.log(`Estado: ${formatted.uf}`);
+  } catch (error) {
+    console.error(chalk.red(error.message));
     process.exit(1);
   }
 }
 
-searchItem(input);
+main(input);
+
+export { main };
