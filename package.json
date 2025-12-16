@@ -3,9 +3,10 @@
   "version": "1.2.0",
   "description": "CLI para consulta de CEP (Código de Endereçamento Postal) brasileiro usando a API ViaCEP / CLI for querying Brazilian postal codes (CEP) using ViaCEP API",
   "main": "dist/index.js",
+  "module": "index.js",
   "scripts": {
     "dev": "node src/index.js",
-    "build": "mkdir -p dist && cp -r src/* dist/ && chmod +x dist/index.js",
+    "build": "mkdir -p dist && cp -r src/index.js dist/ && chmod +x dist/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
@@ -17,7 +18,7 @@
     "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "bin": {
-    "ache-cep-cli": "dist/index.js"
+    "ache-cep-cli": "./dist/index.js"
   },
   "keywords": [
     "cep",
