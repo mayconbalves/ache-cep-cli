@@ -1,7 +1,7 @@
 {
-  "name": "rastreio-cli",
+  "name": "cep-cli",
   "version": "1.0.0",
-  "description": "CLI para consulta de CEP (Código de Endereçamento Postal) brasileiro usando a API ViaCEP",
+  "description": "CLI para consulta de CEP (Código de Endereçamento Postal) brasileiro usando a API ViaCEP / CLI for querying Brazilian postal codes (CEP) using ViaCEP API",
   "main": "dist/index.js",
   "scripts": {
     "dev": "node src/index.js",
@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "bin": {
-    "rastreio-cli": "dist/index.js"
+    "cep-cli": "dist/index.js"
   },
   "keywords": [
     "cep",

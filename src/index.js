@@ -5,8 +5,8 @@ import { fetchCepData, formatCepData } from './cep.js';
 const input = process.argv[2];
 
 if (!input) {
-  console.log(chalk.yellow('Uso: npx rastreio-cli <cep>'));
-  console.log(chalk.cyan('Exemplo: npx rastreio-cli 01310-100'));
+  console.log(chalk.yellow('Uso: npx cep-cli <cep>'));
+  console.log(chalk.cyan('Exemplo: npx cep-cli 01310-100'));
   process.exit(1);
 }
 
