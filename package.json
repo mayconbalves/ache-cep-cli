@@ -1,22 +1,66 @@
 {
   "name": "rastreio-cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CLI para consulta de CEP (Código de Endereçamento Postal) brasileiro usando a API ViaCEP",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "node src/index.js",
-    "build": "mkdir -p dist && cp src/index.js dist/index.js && chmod +x dist/index.js",
-    "prepublishOnly": "npm run build"
+    "build": "mkdir -p dist && cp -r src/* dist/ && chmod +x dist/index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "bin": {
     "rastreio-cli": "dist/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "cep",
+    "cli",
+    "brasil",
+    "viacep",
+    "postal-code",
+    "zip-code",
+    "correios"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "axios": "^1.13.2",
     "chalk": "^5.6.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@jest/globals": "^30.2.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "jest": "^30.2.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mayconbalves/cep-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mayconbalves/cep-cli/issues"
+  },
+  "homepage": "https://github.com/mayconbalves/cep-cli#readme",
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }
