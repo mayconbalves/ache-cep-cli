@@ -1,35 +1,60 @@
 #!/usr/bin/env node
+
 import chalk from 'chalk';
-import { fetchCepData, formatCepData } from './cep.js';
+import axios from 'axios';
+import { Command } from 'commander';
 
-const input = process.argv[2];
+const program = new Command();
 
-if (!input) {
-  console.log(chalk.yellow('Uso: npx ache-cep-cli <cep>'));
-  console.log(chalk.cyan('Exemplo: npx ache-cep-cli 01310-100'));
-  process.exit(1);
+function validateCep(cep) {
+  const cleanCep = cep.replace(/\D/g, '');
+  return cleanCep.length === 8;
 }
 
-/**
- * Main CLI function to search and display CEP information
- * @param {string} code - The CEP code to search
- */
-async function main(code) {
-  try {
-    const data = await fetchCepData(code);
-    const formatted = formatCepData(data);
+function sanitizeCep(cep) {
+  return cep.replace(/\D/g, '');
+}
 
-    console.log(chalk.green(`📍 CEP: ${formatted.cep}`));
-    console.log(`Endereço: ${formatted.logradouro}`);
-    console.log(`Bairro: ${formatted.bairro}`);
-    console.log(`Cidade: ${formatted.localidade}`);
-    console.log(`Estado: ${formatted.uf}`);
-  } catch (error) {
-    console.error(chalk.red(error.message));
-    process.exit(1);
+async function fetchCep(value) {
+  const cleanCep = sanitizeCep(value);
+
+  if (!validateCep(cleanCep)) {
+    throw new Error('CEP inválido. Use 8 dígitos.');
   }
+  const { data } = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`, {
+    headers: { Accept: 'application/json' },
+  });
+
+  if (data.erro) {
+    throw new Error('CEP não encontrado.');
+  }
+
+  return data;
 }
 
-main(input);
+function displayResults(value) {
+  console.log(chalk.green(`📍 CEP: ${value.cep}`));
+  console.log(`Endereço: ${value.logradouro}`);
+  console.log(`Bairro: ${value.bairro}`);
+  console.log(`Cidade: ${value.localidade}`);
+  console.log(`Estado: ${value.uf}`);
+}
 
-export { main };
+program
+  .version('1.1.0')
+  .description('CLI para Buscar e exiber informações de um CEP válido.')
+  .argument('<cep>', 'CEP para consulta')
+  .action(async (value) => {
+    console.log(chalk.blue(`Buscando informações do CEP ${value} ...`));
+
+    try {
+      const response = await fetchCep(value);
+
+      displayResults(response);
+    } catch (error) {
+      console.log(chalk.red(`Error: ${error.message}`));
+      process.exit(1);
+    }
+  });
+
+program.parse();
